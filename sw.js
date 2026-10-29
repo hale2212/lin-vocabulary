@@ -2,10 +2,10 @@ const CACHE_NAME = "lin-toeic-v30";
 const APP_FILES = [
   "./",
   "./index.html",
-  "./styles.css",
+  "./styles.css?v=30",
   "./vocabulary-data.js",
   "./additional-vocabulary-data.js",
-  "./app.js",
+  "./app.js?v=30",
   "./manifest.webmanifest",
   "./app-icon.svg"
 ];
