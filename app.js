@@ -90,6 +90,7 @@ const dailyVocabularyGoalStorageKey = "lingua-toeic-daily-vocabulary-goal";
 const grammarStorageKey = "lin-toeic-grammar-completed";
 const practiceStorageKey = "lin-toeic-practice-results";
 const settingsStorageKey = "lin-toeic-user-settings";
+const currentCardStorageKey = "lin-toeic-current-card-id";
 const categories = ["Tất cả", ...new Set(words.map(item => item.category))];
 let wordProgress = loadWordProgress();
 let reviewRewards = loadReviewRewards();
@@ -313,6 +314,24 @@ function savePracticeResults() {
     localStorage.setItem(practiceStorageKey, JSON.stringify(practiceResults.slice(-20)));
   } catch (error) {
     console.warn("Không thể lưu kết quả luyện thi.", error);
+  }
+}
+
+function loadCurrentCardId() {
+  try {
+    return localStorage.getItem(currentCardStorageKey) || "";
+  } catch (error) {
+    console.warn("Không thể đọc vị trí thẻ hiện tại.", error);
+    return "";
+  }
+}
+
+function saveCurrentCard() {
+  if (visibleWords.length === 0) return;
+  try {
+    localStorage.setItem(currentCardStorageKey, visibleWords[currentIndex]?.id || "");
+  } catch (error) {
+    console.warn("Không thể lưu vị trí thẻ hiện tại.", error);
   }
 }
 
@@ -663,6 +682,7 @@ function renderCards(preferredWordId) {
   }
   currentIndex = Math.max(0, currentIndex);
   renderCard();
+  saveCurrentCard();
 }
 
 document.querySelectorAll(".filter-button").forEach(button => button.addEventListener("click", () => {
@@ -743,6 +763,7 @@ function moveCard(direction) {
     currentIndex = (currentIndex + direction + visibleWords.length) % visibleWords.length;
   }
   cardIsFlipped = false;
+  saveCurrentCard();
   renderCard();
 }
 
@@ -767,6 +788,7 @@ document.querySelector("#shuffle-button").addEventListener("click", () => {
   }
   currentIndex = 0;
   cardIsFlipped = false;
+  saveCurrentCard();
   renderCard();
   showToast("Đã trộn thẻ");
 });
@@ -974,7 +996,8 @@ if ("serviceWorker" in navigator && location.protocol !== "file:") {
 renderCategories();
 renderGrammar();
 updateProgress();
-renderCards();
+renderCards(loadCurrentCardId() || undefined);
 renderPracticeIntro();
+saveCurrentCard();
 showPage("vocabulary");
 if (!userSettings.targetScore) openGoalOnboarding();
