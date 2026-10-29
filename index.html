@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f7f8f5">
+  <meta name="description" content="LIN — ứng dụng luyện thi TOEIC với từ vựng, ngữ pháp và bài thi thử.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>LIN — Luyện thi TOEIC</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./app-icon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="vocabulary-data.js" defer></script>
+  <script src="additional-vocabulary-data.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#" aria-label="LIN học từ vựng TOEIC">
+        <span class="brand-mark">L</span>
+        <span>LIN<span class="brand-dot">.</span></span>
+      </a>
+      <div class="sidebar-label">KHÔNG GIAN HỌC TẬP</div>
+      <nav class="sidebar-nav" aria-label="Điều hướng chính">
+        <button class="sidebar-nav-button active" data-page="home"><span aria-hidden="true">⌂</span>Tổng quan</button>
+        <button class="sidebar-nav-button" data-page="vocabulary"><span aria-hidden="true">▤</span>Từ vựng</button>
+        <button class="sidebar-nav-button" data-page="grammar"><span aria-hidden="true">文</span>Ngữ pháp</button>
+        <button class="sidebar-nav-button" data-page="practice"><span aria-hidden="true">✎</span>Luyện thi</button>
+      </nav>
+      <div class="sidebar-note">
+        <div class="note-icon">✦</div>
+        <strong>Tiến độ từ vựng</strong>
+        <p>Đánh dấu từ đã nhớ để theo dõi tiến độ học từ vựng.</p>
+        <div class="note-progress"><span id="progress-bar"></span></div>
+        <small><span id="progress-percent">0%</span> · <span id="remembered-count">0/0 từ đã nhớ</span> trong toàn bộ danh sách</small>
+        <div class="sidebar-counts">
+          <span>Khó nhớ <strong id="hard-count">0</strong></span>
+          <span>Tổng số từ <strong id="total-count">0</strong></span>
+        </div>
+        <div class="reward-summary"><span>✦ <strong id="reward-points">0</strong> điểm</span><span><strong id="review-count">0</strong> lượt ôn xong</span></div>
+      </div>
+      <div class="source-note">
+        <strong>Từ vựng từ ảnh của bạn</strong>
+        <p>155 từ đã kiểm tra từ bài 15 và 39–50, kèm 52 từ mẫu. Các bài ảnh còn lại sẽ bổ sung sau khi rà soát.</p>
+      </div>
+      <div class="sidebar-footer">Học vui, tiến bộ mỗi ngày <span>✦</span></div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div class="breadcrumb">Không gian học tập <span>/</span> <strong id="breadcrumb-current">Tổng quan</strong></div>
+        <div class="today-label" id="today-label"></div>
+      </header>
+      <div class="mobile-progress" aria-label="Tiến độ từ đã nhớ">
+        <div class="mobile-progress-heading"><span>Tiến độ nhớ toàn bộ từ</span><strong id="mobile-progress-percent">0%</strong></div>
+        <div class="mobile-progress-track"><span id="mobile-progress-bar"></span></div>
+        <div class="mobile-progress-details"><span>Đã nhớ <strong id="mobile-remembered-count">0</strong>/<span id="mobile-total-count">0</span> · Khó nhớ <strong id="mobile-hard-count">0</strong></span><span>Điểm <strong id="mobile-reward-points">0</strong> ✦</span></div>
+      </div>
+
+      <section class="view-page dashboard-page active" id="page-home">
+        <div class="dashboard-hero">
+          <div>
+            <div class="eyebrow"><span class="eyebrow-line"></span> LIN · TOEIC STUDY SPACE</div>
+            <h1 id="dashboard-greeting">Chào bạn, <span class="heading-accent">cùng luyện TOEIC nhé.</span></h1>
+            <p>Chọn một mục để học. Từng bước nhỏ giúp bạn tiến gần mục tiêu hơn.</p>
+          </div>
+          <div class="dashboard-emblem" aria-hidden="true">L<span>✦</span></div>
+        </div>
+        <section class="score-estimate-panel">
+          <div class="score-estimate-main">
+            <span class="score-estimate-label">ƯỚC TÍNH TOEIC · THAM KHẢO</span>
+            <strong class="estimated-score" id="estimated-score">—</strong>
+            <span class="estimated-score-caption" id="estimated-score-caption">Hoàn thành mini test để nhận ước tính dựa trên kết quả học tập.</span>
+          </div>
+          <div class="score-goal">
+            <span>MỤC TIÊU CỦA BẠN</span>
+            <strong id="score-goal-value">Chưa đặt</strong>
+            <button id="edit-goal-button" type="button">Đổi mục tiêu</button>
+          </div>
+          <div class="score-goal-track"><span id="score-goal-progress"></span></div>
+          <div class="score-estimate-disclaimer">Điểm này chỉ để tham khảo từ mini test và tiến độ học, không thay thế kết quả thi TOEIC thật.</div>
+        </section>
+        <div class="dashboard-stats">
+          <article class="dashboard-stat"><span class="dashboard-stat-icon">▤</span><span>Từ khó nhớ</span><strong><span id="dashboard-hard-count">0</span><small> từ cần ôn</small></strong><button data-go="vocabulary">Ôn từ vựng →</button></article>
+          <article class="dashboard-stat"><span class="dashboard-stat-icon grammar-icon">文</span><span>Ngữ pháp</span><strong><span id="dashboard-grammar-count">0</span><small> / 8 chủ điểm</small></strong><button data-go="grammar">Học ngữ pháp →</button></article>
+          <article class="dashboard-stat"><span class="dashboard-stat-icon practice-icon">✎</span><span>Bài luyện thi</span><strong><span id="dashboard-test-count">0</span><small> lượt đã làm</small></strong><button data-go="practice">Làm mini test →</button></article>
+        </div>
+        <div class="section-heading"><div><div class="eyebrow">CHỌN MỤC TIÊU</div><h2>Hôm nay mình học gì?</h2></div></div>
+        <div class="study-cards">
+          <button class="study-card vocab-study" data-go="vocabulary"><span class="study-card-icon">Aa</span><span class="study-card-content"><strong>Từ vựng TOEIC</strong><small>Flashcard, phát âm, ghi chú và ôn từ khó nhớ.</small><span class="study-card-link">Khám phá từ vựng <b>→</b></span></span></button>
+          <button class="study-card grammar-study" data-go="grammar"><span class="study-card-icon">文</span><span class="study-card-content"><strong>Ngữ pháp trọng điểm</strong><small><span id="dashboard-grammar-complete">0</span> / 8 chủ điểm đã ôn.</small><span class="study-card-link">Xem bài học <b>→</b></span></span></button>
+          <button class="study-card practice-study" data-go="practice"><span class="study-card-icon">✓</span><span class="study-card-content"><strong>Luyện đề TOEIC</strong><small>Đã hoàn thành <span id="dashboard-practice-count">0</span> mini test.</small><span class="study-card-link">Bắt đầu luyện <b>→</b></span></span></button>
+        </div>
+        <div class="dashboard-goal-action"><span>Điều chỉnh mục tiêu điểm khi kế hoạch thay đổi.</span><button id="dashboard-edit-goal" type="button">Đổi mục tiêu TOEIC</button></div>
+        <div class="dashboard-tip"><span>✦</span><p><strong>Mẹo học tốt:</strong> kết hợp học từ, ôn ngữ pháp và làm câu hỏi mỗi ngày để luyện đều các kỹ năng.</p></div>
+      </section>
+
+      <section class="view-page grammar-page" id="page-grammar">
+        <div class="page-heading"><div><div class="eyebrow"><span class="eyebrow-line"></span> TOEIC GRAMMAR</div><h1>Ngữ pháp <span class="heading-accent">trọng điểm.</span></h1><p>Ôn nhanh cấu trúc, ví dụ và ghi nhớ các chủ điểm thường xuất hiện.</p></div><div class="vocab-count"><strong id="grammar-completed-heading">0</strong><span> / 8 đã ôn</span></div></div>
+        <div class="grammar-progress"><span id="grammar-progress-bar"></span></div>
+        <div class="grammar-progress-label"><span>Các chủ điểm đã ôn</span><span><strong id="grammar-progress-count">0</strong> / 8</span></div>
+        <div class="grammar-list" id="grammar-list"></div>
+      </section>
+
+      <section class="view-page practice-page" id="page-practice">
+        <div class="page-heading"><div><div class="eyebrow"><span class="eyebrow-line"></span> TOEIC PRACTICE</div><h1>Mini test <span class="heading-accent">TOEIC.</span></h1><p>10 câu hỏi ngắn theo ngữ cảnh công sở. Xem đáp án và giải thích sau mỗi câu.</p></div><div class="test-best-score">Điểm cao nhất <strong id="test-best-score">—</strong></div></div>
+        <div class="test-intro" id="test-intro">
+          <div class="test-intro-icon">✎</div><h2>Sẵn sàng thử sức?</h2><p>Bài luyện gồm 10 câu hỏi trắc nghiệm. Làm theo nhịp độ của bạn — không giới hạn thời gian.</p>
+          <div class="test-intro-details"><span>10 câu hỏi</span><span>Ngữ pháp & từ vựng</span><span>Có giải thích đáp án</span></div>
+          <button class="primary-button test-start-button" id="test-start-button">Bắt đầu mini test <span>→</span></button>
+        </div>
+        <div class="test-panel hidden" id="test-panel"></div>
+      </section>
+
+      <section class="view-page vocabulary-page" id="page-vocabulary">
+        <div class="page-heading">
+          <div>
+            <div class="eyebrow"><span class="eyebrow-line"></span> FLASHCARD · ENGLISH FOR WORK</div>
+            <h1><span class="heading-accent">100 từ mới</span> mỗi ngày.</h1>
+            <p>Thử nhớ nghĩa trước khi lật thẻ. Tiến độ của bạn sẽ tự động được lưu.</p>
+          </div>
+        </div>
+
+        <div class="vocab-toolbar">
+          <div class="filter-tabs" id="filter-tabs" role="group" aria-label="Lọc flashcard theo trạng thái">
+            <button class="filter-button active" data-filter="all">Tất cả</button>
+            <button class="filter-button" data-filter="hard">Khó nhớ</button>
+          </div>
+          <label class="search-box"><span aria-hidden="true">⌕</span><input type="search" id="vocab-search" placeholder="Tìm từ hoặc nghĩa..." aria-label="Tìm từ hoặc nghĩa" inputmode="search" enterkeyhint="search" autocomplete="off"></label>
+          <button class="shuffle-button shuffle-icon-button" id="shuffle-button" type="button" aria-label="Trộn thẻ" title="Trộn thẻ">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+
+        <div class="category-tabs" id="category-tabs" role="group" aria-label="Lọc theo chủ đề"></div>
+        <div class="flashcard-section">
+          <div class="flashcard-wrap">
+            <div class="flashcard-tools">
+              <span id="card-counter">0 / 0</span>
+              <button class="speaker-button" id="speaker-button" type="button" aria-label="Nghe phát âm tiếng Anh" title="Nghe phát âm tiếng Anh">
+                <svg class="speaker-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M15.5 8.5a5 5 0 0 1 0 7m3-10a9 9 0 0 1 0 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+            <button class="flashcard" id="flashcard" aria-expanded="false" aria-label="Lật flashcard để xem nghĩa">
+              <span class="flashcard-top"><span id="card-type"></span><span id="card-mark"></span></span>
+              <span class="flashcard-content">
+                <span class="flashcard-word" id="card-word"></span>
+                <span class="flashcard-pronunciation" id="card-pronunciation"></span>
+                <span class="flashcard-meaning" id="card-meaning"></span>
+                <span class="flashcard-hint" id="card-hint">Chạm hoặc nhấn Space để lật thẻ</span>
+              </span>
+            </button>
+            <div class="flashcard-memory-controls">
+              <label class="hard-checkbox" for="hard-checkbox">
+                <input type="checkbox" id="hard-checkbox">
+                <span>Khó nhớ</span>
+              </label>
+              <label class="remember-checkbox" for="remember-checkbox">
+                <input type="checkbox" id="remember-checkbox">
+                <span>Đã nhớ</span>
+              </label>
+            </div>
+          </div>
+          <div class="deck-navigation">
+            <button class="deck-arrow" id="previous-card" aria-label="Thẻ trước">← Trước</button>
+            <button class="deck-arrow" id="next-card" aria-label="Thẻ tiếp theo">Tiếp theo →</button>
+          </div>
+          <div class="speech-status hidden" id="speech-status" role="status" aria-live="polite"></div>
+          <div class="card-dictionary hidden" id="card-dictionary"></div>
+          <form class="word-note hidden" id="word-note-form">
+            <label for="word-note-input"><span>✎</span> Ghi chú riêng cho từ này</label>
+            <textarea id="word-note-input" rows="2" maxlength="500" placeholder="Ví dụ, cách liên tưởng, câu tự đặt..."></textarea>
+            <div class="note-form-footer"><span id="note-save-status" aria-live="polite"></span><button type="submit" id="save-note-button">Lưu ghi chú</button></div>
+          </form>
+          <div class="empty-state hidden" id="empty-state">Không có từ phù hợp. Thử chọn bộ lọc khác nhé.</div>
+        </div>
+        <div class="source-disclaimer">Nhấn <a id="cambridge-disclaimer-link" href="#" target="_blank" rel="noopener noreferrer">Tra Cambridge</a> để xem từ điển; chọn <a id="youglish-disclaimer-link" href="#" target="_blank" rel="noopener noreferrer">YouGlish</a> để nghe cách dùng từ trong video thực tế.</div>
+      </section>
+      <nav class="mobile-nav" aria-label="Điều hướng chính">
+        <button type="button" data-mobile-page="home" class="mobile-nav-button active"><span aria-hidden="true">⌂</span><span>Tổng quan</span></button>
+        <button type="button" data-mobile-page="vocabulary" class="mobile-nav-button"><span aria-hidden="true">▤</span><span>Từ vựng</span></button>
+        <button type="button" data-mobile-page="grammar" class="mobile-nav-button"><span aria-hidden="true">文</span><span>Ngữ pháp</span></button>
+        <button type="button" data-mobile-page="practice" class="mobile-nav-button"><span aria-hidden="true">✎</span><span>Luyện thi</span></button>
+      </nav>
+    </main>
+  </div>
+  <div class="toast-notification" id="toast-notification" role="status" aria-live="polite" aria-atomic="true"></div>
+  <div class="celebration-modal hidden" id="celebration-modal" role="dialog" aria-modal="true" aria-labelledby="celebration-title">
+    <div class="fireworks" id="fireworks" aria-hidden="true"></div>
+    <section class="celebration-card">
+      <div class="celebration-medal" aria-hidden="true">🏆</div>
+      <div class="celebration-eyebrow" id="celebration-eyebrow">THỬ THÁCH HOÀN THÀNH</div>
+      <h2 id="celebration-title">Bạn làm được rồi!</h2>
+      <p id="celebration-message"></p>
+      <div class="reward-chip" id="reward-chip">✦ <strong>+10 điểm</strong></div>
+      <button class="celebration-button" id="celebration-close">Tiếp tục học nhé</button>
+    </section>
+  </div>
+  <div class="onboarding-modal hidden" id="onboarding-modal" role="dialog" aria-modal="true" aria-labelledby="onboarding-title">
+    <form class="onboarding-card" id="goal-form">
+      <div class="onboarding-brand"><span class="brand-mark">L</span><span>LIN<span class="brand-dot">.</span></span></div>
+      <div class="eyebrow"><span class="eyebrow-line"></span> BẮT ĐẦU HÀNH TRÌNH TOEIC</div>
+      <h2 id="onboarding-title">Mục tiêu của bạn là bao nhiêu?</h2>
+      <p>Chọn mục tiêu điểm để LIN cá nhân hóa màn hình học tập. Bạn có thể thay đổi sau.</p>
+      <div class="goal-options">
+        <label><input type="radio" name="target-score" value="450"><span>450</span></label>
+        <label><input type="radio" name="target-score" value="550"><span>550</span></label>
+        <label><input type="radio" name="target-score" value="650"><span>650</span></label>
+        <label><input type="radio" name="target-score" value="750"><span>750</span></label>
+        <label><input type="radio" name="target-score" value="850"><span>850</span></label>
+        <label><input type="radio" name="target-score" value="900"><span>900</span></label>
+      </div>
+      <label class="onboarding-name-label" for="learner-name">Tên bạn (không bắt buộc)</label>
+      <input class="onboarding-name-input" id="learner-name" maxlength="32" placeholder="Ví dụ: Linh">
+      <button class="primary-button onboarding-submit" type="submit">Đặt mục tiêu học <span>→</span></button>
+      <div class="onboarding-error" id="onboarding-error" role="alert"></div>
+    </form>
+  </div>
+</body>
+</html>

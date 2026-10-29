@@ -1,0 +1,20 @@
+{
+  "id": "./",
+  "name": "LIN — Luyện thi TOEIC",
+  "short_name": "LIN TOEIC",
+  "description": "Học từ vựng, ngữ pháp và luyện thi TOEIC cùng LIN.",
+  "lang": "vi",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f7f8f5",
+  "theme_color": "#f7f8f5",
+  "icons": [
+    {
+      "src": "./app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
